@@ -1,13 +1,27 @@
 #!/bin/bash
 
-set -ex
-
+# install podman, daemonless docker alternative
 install_podman() {
 	sudo dnf -y install podman
 }
 
-install_kubectl() {
+# install vscode + extensions
+install_vscode() {
+	# install vscode + extensions
+	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+	sudo dnf check-update
+	sudo dnf install code
+
+	## install extensions
+	code --install-extension vscodevim.vim
+	code --install-extension dbaeumer.vscode-eslint
+	code --install-extension esbenp.prettier-vscode
+}
+
 # install kubectl
+# https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management
+install_kubectl() {
 cat <<EOF > kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -22,8 +36,8 @@ sudo cp ./kubernetes.repo /etc/yum.repos.d/
 sudo yum install -y kubectl
 }
 
-install_krew() {
 # install krew - kubectl plugin manager
+install_krew() {
 (
   set -x; cd "$(mktemp -d)" &&
   curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
