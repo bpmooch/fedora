@@ -17,12 +17,13 @@ install_vscode() {
 	code --install-extension vscodevim.vim
 	code --install-extension dbaeumer.vscode-eslint
 	code --install-extension esbenp.prettier-vscode
+	code --install-extension dracula-theme.theme-dracula
 }
 
 # install kubectl
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management
 install_kubectl() {
-cat <<EOF > kubernetes.repo
+	cat <<EOF > kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -31,18 +32,22 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
-sudo cp ./kubernetes.repo /etc/yum.repos.d/
+	sudo cp ./kubernetes.repo /etc/yum.repos.d/
 
-sudo yum install -y kubectl
+	sudo yum install -y kubectl
 }
 
 # install krew - kubectl plugin manager
 install_krew() {
-(
-  set -x; cd "$(mktemp -d)" &&
-  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
-  tar zxvf krew.tar.gz &&
-  KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')" &&
-  "$KREW" install krew
-)
+	(
+	  set -x; cd "$(mktemp -d)" &&
+	  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
+	  tar -zxvf krew.tar.gz &&
+	  KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')" &&
+	  "$KREW" install krew
+	)
+
+	kubectl krew install ctx
+	kubectl krew install ns
+	kubectl krew install tail
 }
