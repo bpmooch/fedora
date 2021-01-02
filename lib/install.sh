@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# install gvim for clipboard support
+install_vim() {
+	# after installation, create alias vim="gvim -v" to
+	# utilize vim in the terminal with +clipboard
+	# if it still doesn't work, look at selinux
+	sudo dnf -y install vim-X11
+}
+
 # install podman, daemonless docker alternative
 install_podman() {
 	sudo dnf -y install podman

@@ -7,6 +7,9 @@ set -e
 
 # don't put stuff here that doesn't install cleanly
 # don't put stuff here that isn't idempotent
+info 'Vim' 'Installing vim-X11'
+install_vim
+
 info 'Podman' 'Installing podman'
 install_podman
 
