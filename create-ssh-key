@@ -1,0 +1,95 @@
+#!/bin/bash
+
+set -e
+
+VERSION=1.0.0
+EMAIL='chrismooch@gmail.com'
+DEST="$HOME/.ssh/id_rsa"
+FORCE=0
+
+# Print usage
+usage() {
+  echo -n "create-ssh-key.sh [OPTION]...
+
+Creates an ssh rsa keypair and copies the public key to the system clipboard
+
+ Options:
+  -e, --email       Email to be placed in the key comment value
+  -k, --keypath     Path to rsa private key. Public key uses the basename of the private key path
+  -f, --force       Overwrite existing ssh rsa key without prompt
+  -h, --help        Display this help and exit
+  -v, --version     Output version information and exit
+"
+}
+
+while :; do
+	case $1 in
+		-h|-\?|--help)
+			usage
+			exit 1
+			;;
+		-v|--version)
+			echo "Version: $VERSION"
+			exit 1
+			;;
+		-f|--force)
+			FORCE=1
+			echo "Force overwriting existing keys"
+			;;
+		-k|--keypath)
+			if [ "$2" ]; then
+				DEST=$2
+				shift
+			else
+				echo "Missing private key path value"
+				exit 1
+			fi
+			;;
+		-e|--email)
+			if [ "$2" ]; then
+				EMAIL=$2
+				shift
+			else
+				echo "Missing email comment value"
+				exit 1
+			fi
+			;;
+		*)
+			break
+			;;
+	esac
+	shift
+done
+
+echo "Creating rsa keypair at $DEST with email comment: $EMAIL"
+
+# generate key
+if [ -f "$DEST" ] ; then
+	echo 'key exists. Overwrite? [y/N]'
+	read DELETE_KEY
+	if [ "$DELETE_KEY" = "y" ] ;
+	then
+		rm -f $DEST $DEST.pub
+	else
+		echo "Exiting... $DELETE_KEY"
+		exit 1
+	fi
+fi
+
+# generate key
+ssh-keygen -t rsa -b 4096 -C "$EMAIL" -f "$DEST" -P "" -q
+
+# start ssh agent
+RESULT=$(eval "$(ssh-agent -s)")
+echo "$RESULT"
+
+# add key to ssh-agent
+ssh-add "$DEST"
+
+# copy the public key to the clipboard
+KEY_PUB="$DEST.pub"
+if ! [ command -v xclip ]; then
+	sudo dnf install -y xclip
+fi
+xclip -sel clip < "$KEY_PUB"
+echo "The contents of $KEY_PUB have been copied to your clipboard"
