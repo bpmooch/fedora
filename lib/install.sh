@@ -36,7 +36,8 @@ install_vscode() {
 # install kubectl
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management
 install_kubectl() {
-	cat <<EOF > kubernetes.repo
+	if ! [ -e "/etc/yum.repos.d/kubernetes.repo" ]; then
+		cat <<EOF > kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -45,8 +46,9 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
-	sudo cp ./kubernetes.repo /etc/yum.repos.d/
-	rm ./kubernetes.repo
+		sudo cp ./kubernetes.repo /etc/yum.repos.d/
+		rm ./kubernetes.repo
+	fi
 
 	sudo yum install -y kubectl
 }
