@@ -5,6 +5,11 @@ install_podman() {
 	sudo dnf -y install podman
 }
 
+# install rust, cargo, and clippy
+install_rust() {
+	sudo dnf -y install rust cargo clippy
+}
+
 # install discord using flatpak
 install_discord() {
 	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
