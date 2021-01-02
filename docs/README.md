@@ -2,7 +2,7 @@
 random scripts and things
 
 ## Scripts
-* [Create ssh rsa keys and copy them to the clipboard](create-ssh-key)
+* [Create ssh rsa keys and copy them to the clipboard](../create-ssh-key)
 ## Style
 https://google.github.io/styleguide/shellguide.html
 
