@@ -19,14 +19,16 @@ install_discord() {
 # install vscode + extensions
 install_vscode() {
 	# install vscode + extensions
-	info "Visual Studio Code" "Installing VS Code"
-	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-	sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-	sudo dnf check-update || true # ignore 100 return code
+	if ! [ -e "/etc/yum.repos.d/vscode.repo" ];
+	then
+		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+		sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+		sudo dnf check-update || true # ignore 100 return code
+	fi
 	sudo dnf -y install code
 
 	## install extensions
-	info "Extensions" "Installing vim mode, eslint, prettier, and the dracula theme"
+	info "Visual Studio Code" "Installing vim mode, eslint, prettier, and the dracula theme"
 	code --install-extension vscodevim.vim
 	code --install-extension dbaeumer.vscode-eslint
 	code --install-extension esbenp.prettier-vscode
@@ -75,7 +77,9 @@ install_krew_plugins() {
 
 # install pritunl client
 install_pritunl() {
-	sudo tee /etc/yum.repos.d/pritunl.repo << EOF
+	if ! [ -e "/etc/yum.repos.d/pritunl.repo" ];
+	then
+		sudo tee /etc/yum.repos.d/pritunl.repo << EOF
 [pritunl]
 name=Pritunl Stable Repository
 baseurl=https://repo.pritunl.com/stable/yum/fedora/33/
@@ -83,11 +87,13 @@ gpgcheck=1
 enabled=1
 EOF
 
-	gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A
-	gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > key.tmp
-	sudo rpm --import key.tmp
-	rm -f key.tmp
-	sudo dnf install pritunl-client-electron
+		gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+		gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > key.tmp
+		sudo rpm --import key.tmp
+		rm -f key.tmp
+	fi
+
+	sudo dnf -y install pritunl-client-electron
 }
 
 # install aws cli

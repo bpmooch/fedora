@@ -18,3 +18,15 @@ install_kubectl
 
 info 'Discord' 'Installing Discord'
 install_discord
+
+info 'AWS IAM Authenticator' 'Installing aws-iam-authenticator'
+install_aws_iam_authenticator
+
+info 'Pritunl' 'Installing pritunl vpn client'
+install_pritunl
+
+info 'Visual Studio Code' 'Installing vscode + extensions'
+install_vscode
+
+info 'Vault' 'Installing vault'
+install_vault
