@@ -18,3 +18,6 @@ Volta's installer doesn't work on fedora. I ended up having to build from source
 
 ## [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) Ctrl+Shift+e isn't splitting vertically
 `ibus-emoji` is installed by default. You can edit or disable the `ibus-emoji` shortcut using `ibus-setup`, a gtk3 application for editing IBUS options. More on IBUS [here](https://fedoraproject.org/wiki/I18N/IBus)
+
+## Installing Customize
+[Docs here](https://kubectl.docs.kubernetes.io/installation/kustomize/source/), install from source. `go` can be easily installed with `sudo dnf install golang`

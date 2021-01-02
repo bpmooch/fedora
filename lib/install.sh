@@ -89,3 +89,31 @@ EOF
 	rm -f key.tmp
 	sudo dnf install pritunl-client-electron
 }
+
+# install aws cli
+install_aws_cli() {
+	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+	unzip awscliv2.zip
+	sudo ./aws/install
+}
+
+# install aws iam authenticator
+install_aws_iam_authenticator() {
+	if ! [ -e "/usr/local/bin/aws-iam-authenticator" ];
+	then
+		BIN_NAME='aws-iam-authenticator'
+		curl -o $BIN_NAME https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/aws-iam-authenticator
+		chmod +x "./$BIN_NAME"
+		sudo mv "./$BIN_NAME" /usr/local/bin/
+		echo "installed aws-iam-authenticator at /usr/local/bin/aws-iam-authenticator"
+	else
+		echo "aws-iam-authenticator already exists in /usr/local/bin"
+	fi
+}
+
+# vault installer
+install_vault() {
+	sudo dnf install -y dnf-plugins-core
+	sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+	sudo dnf -y install vault
+}
